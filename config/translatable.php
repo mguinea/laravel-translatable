@@ -13,4 +13,9 @@ return [
     'column_names' => [
         'model_morph_key' => 'model_id',
     ],
+
+    'locales' => [
+        'en', 
+        'es'
+    ]
 ];

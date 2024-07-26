@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Mguinea\Translatable\Exceptions\AttributeIsNotTranslatable;
+use Mguinea\Translatable\Exceptions\LocaleIsNotValidException;
 
 trait Translatable
 {
@@ -70,6 +71,8 @@ trait Translatable
 
     public function getTranslation(string $field, string $locale, bool $useFallbackLocale = true): ?string
     {
+        $this->assertIsValidLocale($locale);
+
         $translations = $this->getTranslations($field)->all();
 
         $locale = $this->normalizeLocale(array_keys($translations), $field, $locale, $useFallbackLocale);
@@ -85,6 +88,7 @@ trait Translatable
 
     public function setTranslation(string $field, string $locale, $content): self
     {
+        $this->assertIsValidLocale($locale);
         $this->guardAgainstNonTranslatableAttribute($field);
 
         $translation = $this->translations()
@@ -109,6 +113,13 @@ trait Translatable
         }
 
         return $this;
+    }
+
+    protected function assertIsValidLocale(string $locale): void
+    {
+        if (!in_array($locale, config('translatable.locales'))) {
+            throw LocaleIsNotValidException::make($locale);
+        }
     }
 
     protected function guardAgainstNonTranslatableAttribute(string $key)
@@ -182,6 +193,7 @@ trait Translatable
 
         if ($response === true) {
             foreach ($this->tempTranslations as $field => $data) {
+                $this->assertIsValidLocale($data['locale']);
                 $this->setTranslation($field, $data['locale'] ?? null, $data['content'] ?? null);
             }
         }
