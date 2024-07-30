@@ -21,7 +21,7 @@ class CreateTranslationsTables extends Migration
                 $table->bigIncrements('id');
                 $table->string('field');
                 $table->string('locale');
-                $table->string('content')->nullable();
+                $table->longText('content')->nullable();
             });
         }
 
