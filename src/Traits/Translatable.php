@@ -36,6 +36,7 @@ trait Translatable
         return $model;
     }
 
+    /*
     public function getAttributeValue($field)
     {
         if (! $this->isTranslatableAttribute($field)) {
@@ -53,6 +54,7 @@ trait Translatable
 
         return $this->setTranslation($field, $this->getLocale(), $value);
     }
+    */
 
     public function isTranslatableAttribute(string $field): bool
     {
